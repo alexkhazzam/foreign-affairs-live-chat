@@ -10,8 +10,8 @@ module.exports.getRegisterPage = (req, res, next) => {
 
 module.exports.postRegisterPage = async (req, res, next) => {
   const email = req.body.email.trim();
-  const password = req.body.password.trim();
-  const passwordConf = req.body.passwordConf.trim();
+  const password = req.body.password;
+  const passwordConf = req.body.passwordConf;
 
   if (email && password && passwordConf) {
     const user = await User.findOne({ email: email }).catch((err) => {
@@ -23,10 +23,14 @@ module.exports.postRegisterPage = async (req, res, next) => {
       const newUser = { ...req.body };
       delete newUser.passwordConf;
 
-      newUser.password = await bcrypt.hash(password, 10).catch((err) => {
-        console.log(`${err}`.red);
-        throw err;
-      });
+      const saltRounds = 10;
+
+      newUser.password = await bcrypt
+        .hash(password, saltRounds)
+        .catch((err) => {
+          console.log(`${err}`.red);
+          throw err;
+        });
 
       return User.create(newUser)
         .then((user) => {
@@ -39,7 +43,7 @@ module.exports.postRegisterPage = async (req, res, next) => {
           throw err;
         });
     }
-    return res.redirect('/register/?uniqueEmail=fail');
+    return res.status(200).redirect('/register/?uniqueEmail=fail');
   }
-  res.redirect('/register/?fullFields=fail');
+  res.status(200).redirect('/register/?fullFields=fail');
 };
