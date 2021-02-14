@@ -28,9 +28,6 @@
             <% if (!uniqueEmail) { %>
               <p class="register-form__error-message">Email already in use.</p>
             <% } %>
-            <% if (!studentEmail) { %>
-              <p class="register-form__error-message">Must have a GNPS email.</p>
-            <% } %>
             <input
               required
               type="password"
@@ -38,12 +35,6 @@
               placeholder="Create a Password"
               name="password"
             />
-            <% if (!length) { %>
-              <p class="register-form__error-message">Password must be at least 8 characters long.</p>
-            <% } %>
-            <% if (!passwordNumber) { %>
-              <p class="register-form__error-message">Password must have at least 1 number.</p>
-            <% } %>
             <input
               required
               type="password"
@@ -51,9 +42,6 @@
               placeholder="Confirm Password"
               name="passwordConf"
             />
-            <% if (!length) { %>
-              <p class="register-form__error-message">Password must have at least 1 number.</p>
-            <% } %>
             <button
               type="submit"
               class="btn btn-info register-form__submit"
