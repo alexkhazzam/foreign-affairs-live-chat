@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-</head>
-<body>
-    
-</body>
+  <link rel="stylesheet" href="/css/login.css" />
+    <%- include("./includes/bootstrap.ejs") %>
+  </head>
+  <body>
+      <div class="form-wrapper">
+          <form class="login-form" method="POST" action="/secure/login">
+            <input
+              required
+              type="email"
+              name="email"
+              class="form-control register-form__email"
+              placeholder="Email"
+            />
+            <input
+              required
+              name="password"
+              type="password"
+              class="form-control register-form__password"
+              placeholder="Password"
+            />
+            <button
+              type="submit"
+              class="btn btn-info register-form__submit"
+              style="vertical-align: middle"
+            >
+              Login
+            </button>
+            <p class="register-form__form-caption">
+              Don't have an account? Click
+              <a id="register-form__form-caption-link" href="/register"
+                >Here</a
+              >
+              to register.
+            </p>
+          </form>
+      </div>
+  </body>
 </html>

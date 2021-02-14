@@ -1,9 +1,10 @@
 const Express = require('express');
 const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
-const bcrypt = require('bcrypt');
+const database = require('./database/mongoDatabase');
+const bodyParser = require('body-parser');
+const colors = require('colors');
 
 const app = Express();
 
@@ -18,6 +19,7 @@ app.use(
 dotenv.config({ path: dotenv.config.env });
 
 app.use(Express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
