@@ -4,7 +4,6 @@ const path = require('path');
 const session = require('express-session');
 const database = require('./database/mongoDatabase');
 const bodyParser = require('body-parser');
-const colors = require('colors');
 
 const app = Express();
 
