@@ -17,21 +17,21 @@ module.exports.postRegisterPage = async (req, res, next) => {
   const passwordConf = req.body.passwordConf.trim();
 
   if (email && password && passwordConf) {
-    // if (email.split('@')[1] !== 'student.gn.k12.ny.us') {
-    //   res.redirect('/register/?studentEmail=fail');
-    // }
+    if (email.split('@')[1] !== 'student.gn.k12.ny.us') {
+      res.redirect('/register/?studentEmail=fail');
+    }
 
-    // if (password.length < 8) {
-    //   res.redirect('/login/?length=fail');
-    // }
+    if (password.length < 8) {
+      res.redirect('/login/?length=fail');
+    }
 
-    // let chars = 0;
-    // for (let i = 0; i < password.length; i++) {
-    //   isNaN(password[i]) ? chars++ : null;
-    //   chars === password.length
-    //     ? res.redirect('/login/?passwordNumber=fail')
-    //     : null;
-    // }
+    let chars = 0;
+    for (let i = 0; i < password.length; i++) {
+      isNaN(password[i]) ? chars++ : null;
+      chars === password.length
+        ? res.redirect('/login/?passwordNumber=fail')
+        : null;
+    }
 
     const user = await User.findOne({ email: email }).catch((err) => {
       console.log(`${err}`.red);
