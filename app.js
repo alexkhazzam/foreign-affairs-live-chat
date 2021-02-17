@@ -1,43 +1,50 @@
-const Express = require('express');
-const dotenv = require('dotenv');
-const path = require('path');
-const session = require('express-session');
-const database = require('./database/mongoDatabase');
+const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
-const colors = require('colors');
-
-const app = Express();
+const PORT = 3000;
+const middleware = require('./middleware');
+const mongoose = require('./database');
+const color = require('colors');
+const session = require('express-session');
 
 app.use(
   session({
-    secret: '...',
+    secret: 'bbq chips',
     resave: true,
     saveUninitialized: false,
   })
 );
 
-dotenv.config({ path: dotenv.config.env });
+const path = require('path');
 
-app.use(Express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.set('view engine', 'ejs');
+app.set('view engine', 'pug');
 app.set('views', 'views');
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const loginRoute = require('./routes/loginRoutes');
 const registerRoute = require('./routes/registerRoutes');
-const sessionMiddleware = require('./sessionMiddleware');
+const logoutRoute = require('./routes/logout');
 
-app.use(loginRoute);
-app.use(registerRoute);
+const postsApiRoute = require('./routes/api/posts');
 
-app.use('/', sessionMiddleware.validateSession, (req, res, next) => {
-  const payload = {};
-  res.status(200).render('home', {});
+app.use('/login', loginRoute);
+app.use('/register', registerRoute);
+app.use('/logout', logoutRoute);
+
+app.use('/api/posts', postsApiRoute);
+
+app.get('/', middleware.requireLogin, (req, res, next) => {
+  const payload = {
+    pageTitle: 'Home',
+    userLoggedIn: req.session.user,
+  };
+
+  res.status(200).render('home', payload);
 });
 
-const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`Listening to requests on port ${PORT}`);
+  console.log(`Listening to requests on port ${PORT}`.bold);
 });

@@ -1,10 +1,40 @@
-const Express = require('express');
-const Router = Express.Router();
+const express = require('express');
+const app = express();
+const router = express.Router();
+const bcrypt = require('bcrypt');
+const User = require('../schemas/UserSchema');
 
-const loginController = require('../controllers/loginController');
+router.get('/', (req, res, next) => {
+  res.status(200).render('login', {});
+});
 
-Router.get('/login', loginController.getLoginPage);
+router.post('/', async (req, res, next) => {
+  const payload = req.body;
 
-Router.post('/login', loginController.postLoginPage);
+  if (req.body.logUsername && req.body.logPassword) {
+    const user = await User.findOne({
+      $or: [
+        { username: req.body.logUsername.trim() },
+        { email: req.body.logUsername.trim() },
+      ],
+    }).catch((err) => {
+      console.log(`${err}`.red);
+      payload.errorMessage = 'Something went wrong';
+      res.status(200).render('login', payload);
+    });
 
-module.exports = Router;
+    if (user) {
+      const result = await bcrypt.compare(req.body.logPassword, user.password);
+      if (result) {
+        req.session.user = user;
+        return res.redirect('/');
+      }
+    }
+    payload.errorMessage = 'Login credentials incorrect.';
+    return res.status(200).render('login', payload);
+  }
+  payload.errorMessage = 'Make sure each field has a valid value.';
+  res.status(200).render('login', {});
+});
+
+module.exports = router;
