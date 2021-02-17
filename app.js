@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const PORT = 3000;
 const middleware = require('./middleware');
 const mongoose = require('./database');
 const color = require('colors');
 const session = require('express-session');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: dotenv.config.env });
 
 app.use(
   session({
@@ -44,6 +46,8 @@ app.get('/', middleware.requireLogin, (req, res, next) => {
 
   res.status(200).render('home', payload);
 });
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Listening to requests on port ${PORT}`.bold);
